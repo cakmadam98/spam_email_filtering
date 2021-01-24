@@ -1,0 +1,8 @@
+Implementation Steps
+1- naive bayes with all words
+
+2- apply mutual information while selecting k words. then perform naive bayes.
+
+3- calculate evaluation metrics such as macro-averaged precision, recall and F-measure.
+
+4- Perform randomization test
