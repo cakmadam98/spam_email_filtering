@@ -2,12 +2,6 @@ import glob
 import json
 import string
 
-def json_reader(path: str):
-    f = open(path, "r")
-    text = json.load(f)
-    f.close()
-    return text
-
 def json_saver(filename: str, file: str):
     # Save df in JSON format.
     f = open(filename, "w")
