@@ -1,5 +1,6 @@
 import glob
 import json
+import string
 
 def json_reader(path: str):
     f = open(path, "r")
@@ -14,7 +15,18 @@ def json_saver(filename: str, file: str):
     f.close()
 
 def get_tokens(filepath: str):
-    return []
+    f = open(filepath, 'r')
+    text = f.read()
+
+    # Design decision: "Subject" is also added into tokens while it appears in each spam and legitimate e-mail."
+
+    # Design decision: I'll change punctuations into " ".
+    for punct in string.punctuation:
+        text = text.replace(punct, " ")
+    
+    tokens = text.split()
+    
+    return tokens
 
 def create_bag_of_words_model(email_paths, email_type):
     bag_of_words = dict()
