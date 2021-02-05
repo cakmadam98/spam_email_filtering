@@ -31,6 +31,7 @@ def create_bag_of_words_model(email_paths, email_type):
                 bag_of_words[token] += 1
             else:
                 bag_of_words[token] = 1
+    return bag_of_words
     json_saver("{}_emails_bag_of_words_model.json".format(email_type), bag_of_words)
 
 
@@ -48,8 +49,11 @@ def preprocess():
     spam_email_paths = get_data_paths("spam")
     legitimate_email_paths = get_data_paths("legitimate")
 
-    create_bag_of_words_model(spam_email_paths, "spam")
-    create_bag_of_words_model(legitimate_email_paths, "legitimate")
+    spam_bag_of_words = create_bag_of_words_model(spam_email_paths, "spam")
+    legit_bag_of_words = create_bag_of_words_model(legitimate_email_paths, "legitimate")
+
+    json_saver("spam_emails_bag_of_words_model.json", spam_bag_of_words)
+    json_saver("legitimate_emails_bag_of_words_model.json", legit_bag_of_words)
 
     print("preprocess is ended")
 
