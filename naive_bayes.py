@@ -47,8 +47,8 @@ def get_score(word_probabilities, class_probability):
     log_of_word_probabilities = [math.log(prob,2) for prob in word_probabilities]
     return (math.log(class_probability, 2) + sum(log_of_word_probabilities))
 
-if __name__ == "__main__":
-    document_path = sys.argv[1]
+def main(given_document_path):
+    document_path = given_document_path
     document_words = get_document_words(document_path)
 
     spam_class_probability = get_class_probability("spam")
@@ -61,6 +61,8 @@ if __name__ == "__main__":
     legitimate_score = get_score(legitimate_word_probabilities, legitimate_class_probability)
 
     if spam_score < legitimate_score:
-        print("document is legitimate")
+        # print("document is legitimate")
+        return "legitimate"
     else:
-        print("document is spam")
+        # print("document is spam")
+        return "spam"
