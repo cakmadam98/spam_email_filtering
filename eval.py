@@ -83,6 +83,10 @@ def get_precision_recall_F_measure():
     precision1, recall1 = get_precision_and_recall_for_spam_class(spam_email_paths, legitimate_email_paths)
     precision2, recall2 = get_precision_and_recall_for_legitimate_class(spam_email_paths, legitimate_email_paths)
 
+    # calculate F-measure for each class
+    f1 = get_f_measure(precision1, recall1)
+    f2 = get_f_measure(precision2, recall2)
+
     # Calculates macro-averaged precision and recall values
     precision = (precision1 + precision2) / 2
     recall = (recall1 + recall2) / 2

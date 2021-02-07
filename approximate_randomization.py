@@ -128,6 +128,9 @@ def calculate_p_value(f_measure_all, f_measure_K, spam_predictions_all, spam_pre
     return p_value
 
 
+
+# MAIN
+
 # **** Without Feature Selection ******
 # preprocess with all words
 preprocessor.preprocess("all")
