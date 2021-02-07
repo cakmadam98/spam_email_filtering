@@ -50,6 +50,14 @@ def get_data_paths(email_type: str):
         legitimate_files = glob.glob("./dataset/training/legitimate/*.txt")
         return legitimate_files
 
+def get_data_paths_for_testing(email_type: str):
+    if email_type == "spam":
+        spam_files = glob.glob("./dataset/test/spam/*.txt")
+        return spam_files
+    else:
+        legitimate_files = glob.glob("./dataset/test/legitimate/*.txt")
+        return legitimate_files
+
 def get_mutual_information_value(word_frequency_in_spam_emails, word_frequency_in_legit_emails, missing_word_frequency_in_spam_emails, missing_word_frequency_in_legit_emails, total_number_of_words):
     first_box = (word_frequency_in_spam_emails / total_number_of_words) * math.log((word_frequency_in_spam_emails / total_number_of_words) / (((word_frequency_in_spam_emails + word_frequency_in_legit_emails) / total_number_of_words)*((word_frequency_in_spam_emails + missing_word_frequency_in_spam_emails) / total_number_of_words)))
     second_box = (word_frequency_in_legit_emails / total_number_of_words) * math.log((word_frequency_in_legit_emails / total_number_of_words) / ((word_frequency_in_spam_emails + word_frequency_in_legit_emails) / total_number_of_words * (word_frequency_in_legit_emails + missing_word_frequency_in_legit_emails) / total_number_of_words))

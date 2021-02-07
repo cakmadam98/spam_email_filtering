@@ -1,5 +1,3 @@
-# Make sure hocanın computer can run the command below.
-
 import subprocess
 import eval
 import preprocessor
@@ -8,8 +6,8 @@ import random
 
 def get_eval_results():
     
-    spam_email_paths = preprocessor.get_data_paths("spam")
-    legitimate_email_paths = preprocessor.get_data_paths("legitimate")
+    spam_email_paths = preprocessor.get_data_paths_for_testing("spam")
+    legitimate_email_paths = preprocessor.get_data_paths_for_testing("legitimate")
 
     spam_predictions = []
     for path in spam_email_paths:
@@ -99,7 +97,7 @@ def calculate_p_value(f_measure_all, f_measure_K, spam_predictions_all, spam_pre
         legit2 = legitimate_predictions_K
 
 
-        print("iteration {}".format(_))
+        # print("iteration {}".format(_))
 
         # swappings
         for i in range(len(spam1)):
@@ -121,7 +119,7 @@ def calculate_p_value(f_measure_all, f_measure_K, spam_predictions_all, spam_pre
         f2 = calculate_f_measure(spam2, legit2)
         
         score = abs(f1 - f2)
-        print(score)
+        # print(score)
         if score >= reference_score:
             counter += 1
     

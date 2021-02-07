@@ -13,8 +13,8 @@ def get_precision_and_recall_for_spam_class():
     false_positives = 0
     false_negatives = 0
 
-    spam_email_paths = preprocessor.get_data_paths("spam")
-    legitimate_email_paths = preprocessor.get_data_paths("legitimate")
+    spam_email_paths = preprocessor.get_data_paths_for_testing("spam")
+    legitimate_email_paths = preprocessor.get_data_paths_for_testing("legitimate")
 
     for path in spam_email_paths:
         predicted_result = naive_bayes.main(path)
@@ -42,8 +42,8 @@ def get_precision_and_recall_for_legitimate_class():
     false_positives = 0
     false_negatives = 0
 
-    spam_email_paths = preprocessor.get_data_paths("spam")
-    legitimate_email_paths = preprocessor.get_data_paths("legitimate")
+    spam_email_paths = preprocessor.get_data_paths_for_testing("spam")
+    legitimate_email_paths = preprocessor.get_data_paths_for_testing("legitimate")
 
     for path in legitimate_email_paths:
         predicted_result = naive_bayes.main(path)
