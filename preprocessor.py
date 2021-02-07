@@ -7,6 +7,7 @@ import glob
 import json
 import string
 import math
+import sys
 
 def json_saver(filename: str, file: str):
     # Save df in JSON format.
@@ -108,7 +109,7 @@ def get_subset(bag_of_words, distinctive_words):
         subset[distinctive_word] = bag_of_words[distinctive_word]
     return subset
 
-def preprocess():
+def preprocess(preprocess_type):
     print("preprocess is started")
 
     spam_email_paths = get_data_paths("spam")
@@ -117,16 +118,15 @@ def preprocess():
     spam_bag_of_words = create_bag_of_words_model(spam_email_paths, "spam")
     legit_bag_of_words = create_bag_of_words_model(legitimate_email_paths, "legitimate")
 
-    '''
-    # Choose K distinctive words.
-    K = 100
-    spam_distinctive_words = get_distinctive_words(K, "spam", spam_bag_of_words, legit_bag_of_words)
-    legit_distinctive_words = get_distinctive_words(K, "legitimate", spam_bag_of_words, legit_bag_of_words)
+    if preprocess_type == "K":
+        # Choose K distinctive words.
+        K = 100
+        spam_distinctive_words = get_distinctive_words(K, "spam", spam_bag_of_words, legit_bag_of_words)
+        legit_distinctive_words = get_distinctive_words(K, "legitimate", spam_bag_of_words, legit_bag_of_words)
 
-    # Update bag of words models.
-    spam_bag_of_words = get_subset(spam_bag_of_words, spam_distinctive_words)
-    legit_bag_of_words = get_subset(legit_bag_of_words, legit_distinctive_words)
-    '''
+        # Update bag of words models.
+        spam_bag_of_words = get_subset(spam_bag_of_words, spam_distinctive_words)
+        legit_bag_of_words = get_subset(legit_bag_of_words, legit_distinctive_words)
 
     json_saver("spam_emails_bag_of_words_model.json", spam_bag_of_words)
     json_saver("legitimate_emails_bag_of_words_model.json", legit_bag_of_words)
@@ -134,4 +134,4 @@ def preprocess():
     print("preprocess is ended")
 
 if __name__ == "__main__":
-    preprocess()
+    preprocess(sys.argv[1])

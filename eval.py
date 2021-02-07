@@ -65,16 +65,20 @@ def get_precision_and_recall_for_legitimate_class():
     return recall, precision
 
     
+def get_precision_recall_F_measure():
+    precision1, recall1 = get_precision_and_recall_for_spam_class()
+    precision2, recall2 = get_precision_and_recall_for_legitimate_class()
 
-precision1, recall1 = get_precision_and_recall_for_spam_class()
-precision2, recall2 = get_precision_and_recall_for_legitimate_class()
+    # macro-averaged precision and recall values
+    precision = (precision1 + precision2) / 2
+    recall = (recall1 + recall2) / 2
 
-# macro-averaged precision and recall values
-precision = (precision1 + precision2) / 2
-recall = (recall1 + recall2) / 2
+    f_measure = get_f_measure(precision, recall)
 
-f_measure = get_f_measure(precision, recall)
+    return precision, recall, f_measure
 
-print("precision: {}".format(precision))
-print("recall: {}".format(recall))
-print("f_measure: {}".format(f_measure))
+if __name__ == "__main__":
+    precision, recall, f_measure = get_precision_recall_F_measure()
+    print("precision: {}".format(precision))
+    print("recall: {}".format(recall))
+    print("f_measure: {}".format(f_measure))
