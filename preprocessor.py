@@ -62,10 +62,26 @@ def get_data_paths_for_testing(email_type: str):
 
 # Calculates the mutual information value.
 def get_mutual_information_value(word_frequency_in_spam_emails, word_frequency_in_legit_emails, missing_word_frequency_in_spam_emails, missing_word_frequency_in_legit_emails, total_number_of_words):
-    first_box = (word_frequency_in_spam_emails / total_number_of_words) * math.log((word_frequency_in_spam_emails / total_number_of_words) / (((word_frequency_in_spam_emails + word_frequency_in_legit_emails) / total_number_of_words)*((word_frequency_in_spam_emails + missing_word_frequency_in_spam_emails) / total_number_of_words)))
-    second_box = (word_frequency_in_legit_emails / total_number_of_words) * math.log((word_frequency_in_legit_emails / total_number_of_words) / ((word_frequency_in_spam_emails + word_frequency_in_legit_emails) / total_number_of_words * (word_frequency_in_legit_emails + missing_word_frequency_in_legit_emails) / total_number_of_words))
-    third_box = (missing_word_frequency_in_spam_emails / total_number_of_words) * math.log((missing_word_frequency_in_spam_emails / total_number_of_words) / ( (missing_word_frequency_in_spam_emails + missing_word_frequency_in_legit_emails) / total_number_of_words * (word_frequency_in_spam_emails + missing_word_frequency_in_spam_emails) / total_number_of_words ))
-    fourth_box = (missing_word_frequency_in_legit_emails / total_number_of_words) * math.log((missing_word_frequency_in_legit_emails / total_number_of_words) / ( (missing_word_frequency_in_spam_emails + missing_word_frequency_in_legit_emails) / total_number_of_words * (word_frequency_in_legit_emails + missing_word_frequency_in_legit_emails) / total_number_of_words ))
+    if word_frequency_in_spam_emails == 0:
+        first_box = 0
+    else:
+        first_box = (word_frequency_in_spam_emails / total_number_of_words) * math.log((word_frequency_in_spam_emails / total_number_of_words) / (((word_frequency_in_spam_emails + word_frequency_in_legit_emails) / total_number_of_words)*((word_frequency_in_spam_emails + missing_word_frequency_in_spam_emails) / total_number_of_words)))
+    
+    if word_frequency_in_legit_emails == 0:
+        second_box = 0
+    else:
+        second_box = (word_frequency_in_legit_emails / total_number_of_words) * math.log((word_frequency_in_legit_emails / total_number_of_words) / ((word_frequency_in_spam_emails + word_frequency_in_legit_emails) / total_number_of_words * (word_frequency_in_legit_emails + missing_word_frequency_in_legit_emails) / total_number_of_words))
+    
+    if missing_word_frequency_in_spam_emails == 0:
+        third_box = 0
+    else:
+        third_box = (missing_word_frequency_in_spam_emails / total_number_of_words) * math.log((missing_word_frequency_in_spam_emails / total_number_of_words) / ( (missing_word_frequency_in_spam_emails + missing_word_frequency_in_legit_emails) / total_number_of_words * (word_frequency_in_spam_emails + missing_word_frequency_in_spam_emails) / total_number_of_words ))
+    
+    if missing_word_frequency_in_legit_emails == 0:
+        fourth_box = 0
+    else:
+        fourth_box = (missing_word_frequency_in_legit_emails / total_number_of_words) * math.log((missing_word_frequency_in_legit_emails / total_number_of_words) / ( (missing_word_frequency_in_spam_emails + missing_word_frequency_in_legit_emails) / total_number_of_words * (word_frequency_in_legit_emails + missing_word_frequency_in_legit_emails) / total_number_of_words ))
+    
     return first_box + second_box + third_box + fourth_box
 
 # Given K, class_type and bag of words models, returns top K distinctive words
@@ -85,7 +101,7 @@ def get_distinctive_words(K, class_type, spam_bag_of_words, legit_bag_of_words):
 
             # below variables are used for calculating mutual informatin value.
             word_frequency_in_spam_emails = word_frequency
-            word_frequency_in_legit_emails = legit_bag_of_words.get(word, 0.000001) # if word does not exist, it will return very low value.
+            word_frequency_in_legit_emails = legit_bag_of_words.get(word, 0) # if word does not exist, it will return very low value.
             missing_word_frequency_in_spam_emails = number_of_words_in_spam_class - word_frequency_in_spam_emails
             missing_word_frequency_in_legit_emails = number_of_words_in_legitimate_class - word_frequency_in_legit_emails
             
@@ -107,7 +123,7 @@ def get_distinctive_words(K, class_type, spam_bag_of_words, legit_bag_of_words):
         for word, word_frequency in legit_bag_of_words.items():
 
             # below variables are used for calculating mutual informatin value.
-            word_frequency_in_spam_emails = spam_bag_of_words.get(word, 0.000001) # if word does not exist, it will return very low value.
+            word_frequency_in_spam_emails = spam_bag_of_words.get(word, 0) # if word does not exist, it will return very low value.
             word_frequency_in_legit_emails = word_frequency
             missing_word_frequency_in_spam_emails = number_of_words_in_spam_class - word_frequency_in_spam_emails
             missing_word_frequency_in_legit_emails = number_of_words_in_legitimate_class - word_frequency_in_legit_emails
