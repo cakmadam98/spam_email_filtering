@@ -41,7 +41,6 @@ def create_bag_of_words_model(email_paths, email_type):
             else:
                 bag_of_words[token] = 1
     return bag_of_words
-    json_saver("{}_emails_bag_of_words_model.json".format(email_type), bag_of_words)
 
 # Given email type(spam/legitimate), returns all file paths in the training dataset.
 def get_data_paths(email_type: str):
