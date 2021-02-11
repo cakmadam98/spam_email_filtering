@@ -29,8 +29,20 @@ def get_tokens(filepath: str):
     tokens = text.split()
     return tokens
 
+# Given list of emails and their type(spam/legitimate), return a document frequencies of words.
+def create_document_frequency_dictionary(email_paths, email_type):
+    df = dict()
+    for filepath in email_paths:
+        tokens = get_tokens(filepath)
+        unique_tokens = list(set(tokens))
+        for token in unique_tokens:
+            if token in df:
+                df[token] += 1
+            else:
+                df[token] = 1
+    return df
+
 # Given list of emails and their type(spam/legitimate), creates bag of words model.
-# Also creates a JSON file under the current directory.
 def create_bag_of_words_model(email_paths, email_type):
     bag_of_words = dict()
     for filepath in email_paths:
@@ -61,52 +73,58 @@ def get_data_paths_for_testing(email_type: str):
         return legitimate_files
 
 # Calculates the mutual information value.
-def get_mutual_information_value(word_frequency_in_spam_emails, word_frequency_in_legit_emails, missing_word_frequency_in_spam_emails, missing_word_frequency_in_legit_emails, total_number_of_words):
-    if word_frequency_in_spam_emails == 0:
+def get_mutual_information_value(n_documents_in_spam_emails, n_documents_in_legit_emails, n_missing_documents_in_spam_emails, n_missing_documents_in_legit_emails, total_number_of_documents):
+    if n_documents_in_spam_emails == 0:
         first_box = 0
     else:
-        first_box = (word_frequency_in_spam_emails / total_number_of_words) * math.log((word_frequency_in_spam_emails / total_number_of_words) / (((word_frequency_in_spam_emails + word_frequency_in_legit_emails) / total_number_of_words)*((word_frequency_in_spam_emails + missing_word_frequency_in_spam_emails) / total_number_of_words)))
+        first_box = (n_documents_in_spam_emails / total_number_of_documents) * math.log((n_documents_in_spam_emails / total_number_of_documents) / (((n_documents_in_spam_emails + n_documents_in_legit_emails) / total_number_of_documents)*((n_documents_in_spam_emails + n_missing_documents_in_spam_emails) / total_number_of_documents)))
     
-    if word_frequency_in_legit_emails == 0:
+    if n_documents_in_legit_emails == 0:
         second_box = 0
     else:
-        second_box = (word_frequency_in_legit_emails / total_number_of_words) * math.log((word_frequency_in_legit_emails / total_number_of_words) / ((word_frequency_in_spam_emails + word_frequency_in_legit_emails) / total_number_of_words * (word_frequency_in_legit_emails + missing_word_frequency_in_legit_emails) / total_number_of_words))
+        second_box = (n_documents_in_legit_emails / total_number_of_documents) * math.log((n_documents_in_legit_emails / total_number_of_documents) / ((n_documents_in_spam_emails + n_documents_in_legit_emails) / total_number_of_documents * (n_documents_in_legit_emails + n_missing_documents_in_legit_emails) / total_number_of_documents))
     
-    if missing_word_frequency_in_spam_emails == 0:
+    if n_missing_documents_in_spam_emails == 0:
         third_box = 0
     else:
-        third_box = (missing_word_frequency_in_spam_emails / total_number_of_words) * math.log((missing_word_frequency_in_spam_emails / total_number_of_words) / ( (missing_word_frequency_in_spam_emails + missing_word_frequency_in_legit_emails) / total_number_of_words * (word_frequency_in_spam_emails + missing_word_frequency_in_spam_emails) / total_number_of_words ))
+        third_box = (n_missing_documents_in_spam_emails / total_number_of_documents) * math.log((n_missing_documents_in_spam_emails / total_number_of_documents) / ( (n_missing_documents_in_spam_emails + n_missing_documents_in_legit_emails) / total_number_of_documents * (n_documents_in_spam_emails + n_missing_documents_in_spam_emails) / total_number_of_documents ))
     
-    if missing_word_frequency_in_legit_emails == 0:
+    if n_missing_documents_in_legit_emails == 0:
         fourth_box = 0
     else:
-        fourth_box = (missing_word_frequency_in_legit_emails / total_number_of_words) * math.log((missing_word_frequency_in_legit_emails / total_number_of_words) / ( (missing_word_frequency_in_spam_emails + missing_word_frequency_in_legit_emails) / total_number_of_words * (word_frequency_in_legit_emails + missing_word_frequency_in_legit_emails) / total_number_of_words ))
+        fourth_box = (n_missing_documents_in_legit_emails / total_number_of_documents) * math.log((n_missing_documents_in_legit_emails / total_number_of_documents) / ( (n_missing_documents_in_spam_emails + n_missing_documents_in_legit_emails) / total_number_of_documents * (n_documents_in_legit_emails + n_missing_documents_in_legit_emails) / total_number_of_documents ))
     
     return first_box + second_box + third_box + fourth_box
 
-# Given K, class_type and bag of words models, returns top K distinctive words
+# Given K, class_type and document frequencies of words, returns top K distinctive words
 # K: Number of distinctive words requested.
 # class_type: Spam or Legitimate.
+# spam_bag_of_words: document frequencies of all words in spam emails.
+# legit_bag_of_words: document frequencies of all words in legitimate emails.
 def get_distinctive_words(K, class_type, spam_bag_of_words, legit_bag_of_words):
 
     # Calculates total number of words which will be used later.
-    number_of_words_in_spam_class = sum(list(spam_bag_of_words.values()))
-    number_of_words_in_legitimate_class = sum(list(legit_bag_of_words.values()))
-    total_number_of_words = number_of_words_in_spam_class + number_of_words_in_legitimate_class
+
+    # sanki number of words değil de, number of documents ile ilgilenmemiz gerekiyor?
+    # variable isimler çok karışık onlara bi bak lütfen.
+    
+    number_of_documents_in_spam_class = 240
+    number_of_documents_in_legitimate_class = 240
+    total_number_of_documents = number_of_documents_in_spam_class + number_of_documents_in_legitimate_class
 
     if class_type == "spam":
 
         word_scores_in_spam_emails = dict()
-        for word, word_frequency in spam_bag_of_words.items():
+        for word, document_frequency_of_that_word in spam_bag_of_words.items():
 
-            # below variables are used for calculating mutual informatin value.
-            word_frequency_in_spam_emails = word_frequency
-            word_frequency_in_legit_emails = legit_bag_of_words.get(word, 0) # if word does not exist, it will return very low value.
-            missing_word_frequency_in_spam_emails = number_of_words_in_spam_class - word_frequency_in_spam_emails
-            missing_word_frequency_in_legit_emails = number_of_words_in_legitimate_class - word_frequency_in_legit_emails
+            # below variables are used for calculating mutual information value.
+            n_documents_in_spam_emails = document_frequency_of_that_word
+            n_documents_in_legit_emails = legit_bag_of_words.get(word, 0) # if word does not exist, it will return 0.
+            n_missing_documents_in_spam_emails = number_of_documents_in_spam_class - n_documents_in_spam_emails
+            n_missing_documents_in_legit_emails = number_of_documents_in_legitimate_class - n_documents_in_legit_emails
             
             # Get mutual information
-            mutual_information = get_mutual_information_value(word_frequency_in_spam_emails, word_frequency_in_legit_emails, missing_word_frequency_in_spam_emails, missing_word_frequency_in_legit_emails, total_number_of_words)
+            mutual_information = get_mutual_information_value(n_documents_in_spam_emails, n_documents_in_legit_emails, n_missing_documents_in_spam_emails, n_missing_documents_in_legit_emails, total_number_of_documents)
             
             # Add to the dictionary
             word_scores_in_spam_emails[word] = mutual_information
@@ -120,16 +138,16 @@ def get_distinctive_words(K, class_type, spam_bag_of_words, legit_bag_of_words):
     else:
 
         word_scores_in_legit_emails = dict()
-        for word, word_frequency in legit_bag_of_words.items():
+        for word, document_frequency_of_that_word in legit_bag_of_words.items():
 
             # below variables are used for calculating mutual informatin value.
-            word_frequency_in_spam_emails = spam_bag_of_words.get(word, 0) # if word does not exist, it will return very low value.
-            word_frequency_in_legit_emails = word_frequency
-            missing_word_frequency_in_spam_emails = number_of_words_in_spam_class - word_frequency_in_spam_emails
-            missing_word_frequency_in_legit_emails = number_of_words_in_legitimate_class - word_frequency_in_legit_emails
+            n_documents_in_spam_emails = spam_bag_of_words.get(word, 0) # if word does not exist, it will return 0.
+            n_documents_in_legit_emails = document_frequency_of_that_word
+            n_missing_documents_in_spam_emails = number_of_documents_in_spam_class - n_documents_in_spam_emails
+            n_missing_documents_in_legit_emails = number_of_documents_in_legitimate_class - n_documents_in_legit_emails
             
             # Get mutual information
-            mutual_information = get_mutual_information_value(word_frequency_in_spam_emails, word_frequency_in_legit_emails, missing_word_frequency_in_spam_emails, missing_word_frequency_in_legit_emails, total_number_of_words)
+            mutual_information = get_mutual_information_value(n_documents_in_spam_emails, n_documents_in_legit_emails, n_missing_documents_in_spam_emails, n_missing_documents_in_legit_emails, total_number_of_documents)
             
             # Add to the dictionary
             word_scores_in_legit_emails[word] = mutual_information
@@ -163,12 +181,18 @@ def preprocess(preprocess_type):
     spam_bag_of_words = create_bag_of_words_model(spam_email_paths, "spam")
     legit_bag_of_words = create_bag_of_words_model(legitimate_email_paths, "legitimate")
 
+    # Create a dictionary containing words as key and "number of documents it appears" as values
+    # this is needed for calculating mutual information.
+    document_frequencies_of_words_in_spam_emails = create_document_frequency_dictionary(spam_email_paths, "spam")
+    document_frequencies_of_words_in_legit_emails = create_document_frequency_dictionary(legitimate_email_paths, "legitimate")
+
+
     # If top K distinctive words is requested, reduces the vocabulary size of the model.
     if preprocess_type == "K":
         # Choose K distinctive words.
         K = 100
-        spam_distinctive_words = get_distinctive_words(K, "spam", spam_bag_of_words, legit_bag_of_words)
-        legit_distinctive_words = get_distinctive_words(K, "legitimate", spam_bag_of_words, legit_bag_of_words)
+        spam_distinctive_words = get_distinctive_words(K, "spam", document_frequencies_of_words_in_spam_emails, document_frequencies_of_words_in_legit_emails)
+        legit_distinctive_words = get_distinctive_words(K, "legitimate", document_frequencies_of_words_in_spam_emails, document_frequencies_of_words_in_legit_emails)
 
         # Update bag of words models.
         spam_bag_of_words = get_subset(spam_bag_of_words, spam_distinctive_words)
