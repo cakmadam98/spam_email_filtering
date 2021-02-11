@@ -1,8 +1,3 @@
-'''
-Notes: 
-- P(ew, ec) == 0 olduğu durumlarda 10^-5 gibi düşük bir değer koyuyorum. Sıkıntı yaratır mı acep
-'''
-
 import glob
 import json
 import string
@@ -193,6 +188,12 @@ def preprocess(preprocess_type):
         K = 100
         spam_distinctive_words = get_distinctive_words(K, "spam", document_frequencies_of_words_in_spam_emails, document_frequencies_of_words_in_legit_emails)
         legit_distinctive_words = get_distinctive_words(K, "legitimate", document_frequencies_of_words_in_spam_emails, document_frequencies_of_words_in_legit_emails)
+
+        '''
+        print(spam_distinctive_words)
+        print()
+        print(legit_distinctive_words)
+        '''
 
         # Update bag of words models.
         spam_bag_of_words = get_subset(spam_bag_of_words, spam_distinctive_words)

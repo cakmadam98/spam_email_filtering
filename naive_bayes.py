@@ -36,15 +36,14 @@ def get_word_probabilities(document_words, email_type):
     else:
         bag_of_words = json_reader("legitimate_emails_bag_of_words_model.json")
     
-    # total number of words in the corpus is calculated.
-    # this can be improved later. no need to calculate this for each document.
-    total_number_of_words = sum(list(bag_of_words.values()))
+    # Size of the vocabulary is calculated.
+    n_words = len(list(bag_of_words.keys()))
 
     word_probability_list = []
     for word in document_words:
         # laplace(add-1) smoothing performed
         # (# of occurrance of word W + 1) / (total # of words in corpus + total # of words in the document)
-        word_probability_list.append((int(bag_of_words.get(word, 0))+1) / ((total_number_of_words)+len(document_words)))
+        word_probability_list.append((int(bag_of_words.get(word, 0))+1) / ((n_words)+len(document_words)))
     
     return word_probability_list
 
