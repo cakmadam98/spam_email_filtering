@@ -77,22 +77,22 @@ def get_mutual_information_value(n_documents_in_spam_emails, n_documents_in_legi
     if n_documents_in_spam_emails == 0:
         first_box = 0
     else:
-        first_box = (n_documents_in_spam_emails / total_number_of_documents) * math.log((n_documents_in_spam_emails / total_number_of_documents) / (((n_documents_in_spam_emails + n_documents_in_legit_emails) / total_number_of_documents)*((n_documents_in_spam_emails + n_missing_documents_in_spam_emails) / total_number_of_documents)))
+        first_box = (n_documents_in_spam_emails / total_number_of_documents) * math.log((n_documents_in_spam_emails / total_number_of_documents) / (((n_documents_in_spam_emails + n_documents_in_legit_emails) / total_number_of_documents)*((n_documents_in_spam_emails + n_missing_documents_in_spam_emails) / total_number_of_documents)), 2)
     
     if n_documents_in_legit_emails == 0:
         second_box = 0
     else:
-        second_box = (n_documents_in_legit_emails / total_number_of_documents) * math.log((n_documents_in_legit_emails / total_number_of_documents) / ((n_documents_in_spam_emails + n_documents_in_legit_emails) / total_number_of_documents * (n_documents_in_legit_emails + n_missing_documents_in_legit_emails) / total_number_of_documents))
+        second_box = (n_documents_in_legit_emails / total_number_of_documents) * math.log((n_documents_in_legit_emails / total_number_of_documents) / ((n_documents_in_spam_emails + n_documents_in_legit_emails) / total_number_of_documents * (n_documents_in_legit_emails + n_missing_documents_in_legit_emails) / total_number_of_documents), 2)
     
     if n_missing_documents_in_spam_emails == 0:
         third_box = 0
     else:
-        third_box = (n_missing_documents_in_spam_emails / total_number_of_documents) * math.log((n_missing_documents_in_spam_emails / total_number_of_documents) / ( (n_missing_documents_in_spam_emails + n_missing_documents_in_legit_emails) / total_number_of_documents * (n_documents_in_spam_emails + n_missing_documents_in_spam_emails) / total_number_of_documents ))
+        third_box = (n_missing_documents_in_spam_emails / total_number_of_documents) * math.log((n_missing_documents_in_spam_emails / total_number_of_documents) / ( (n_missing_documents_in_spam_emails + n_missing_documents_in_legit_emails) / total_number_of_documents * (n_documents_in_spam_emails + n_missing_documents_in_spam_emails) / total_number_of_documents ), 2)
     
     if n_missing_documents_in_legit_emails == 0:
         fourth_box = 0
     else:
-        fourth_box = (n_missing_documents_in_legit_emails / total_number_of_documents) * math.log((n_missing_documents_in_legit_emails / total_number_of_documents) / ( (n_missing_documents_in_spam_emails + n_missing_documents_in_legit_emails) / total_number_of_documents * (n_documents_in_legit_emails + n_missing_documents_in_legit_emails) / total_number_of_documents ))
+        fourth_box = (n_missing_documents_in_legit_emails / total_number_of_documents) * math.log((n_missing_documents_in_legit_emails / total_number_of_documents) / ( (n_missing_documents_in_spam_emails + n_missing_documents_in_legit_emails) / total_number_of_documents * (n_documents_in_legit_emails + n_missing_documents_in_legit_emails) / total_number_of_documents ), 2)
     
     return first_box + second_box + third_box + fourth_box
 
