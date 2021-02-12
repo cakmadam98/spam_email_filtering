@@ -132,11 +132,17 @@ def calculate_p_value(f_measure_all, f_measure_K, spam_predictions_all, spam_pre
 # MAIN
 
 # **** Without Feature Selection ******
+print("****** Without Feature Selection ******")
+
 # preprocess with all words
 preprocessor.preprocess("all")
 
 # evaluates that model
 precision_all, recall_all, f_measure_all = eval.get_precision_recall_F_measure()
+print("Precision: {}".format(precision_all))
+print("Recall: {}".format(recall_all))
+print("F-Measure: {}".format(f_measure_all))
+print()
 
 # gets file paths of each class.
 spam_email_paths = preprocessor.get_data_paths_for_testing("spam")
@@ -148,11 +154,17 @@ spam_predictions_all, legitimate_predictions_all = get_test_predictions(spam_ema
 
 
 # **** With Feature Selection ******
+print("****** With Feature Selection ******")
+
 # preprocess with K words
 preprocessor.preprocess("K")
 
 # evaluates that model
 precision_K, recall_K, f_measure_K = eval.get_precision_recall_F_measure()
+print("Precision: {}".format(precision_K))
+print("Recall: {}".format(recall_K))
+print("F-Measure: {}".format(f_measure_K))
+print()
 
 # stores the predictions
 spam_predictions_K, legitimate_predictions_K = get_test_predictions(spam_email_paths, legitimate_email_paths)
@@ -160,6 +172,8 @@ spam_predictions_K, legitimate_predictions_K = get_test_predictions(spam_email_p
 
 
 # ***** Approximate Randomization Test ****
+print("****** Approximate Randomization Test ******")
+
 # perform approximate_randomization test 
 p_value = calculate_p_value(f_measure_all, f_measure_K, spam_predictions_all, spam_predictions_K, legitimate_predictions_all, legitimate_predictions_K)
 

@@ -181,7 +181,6 @@ def preprocess(preprocess_type):
     document_frequencies_of_words_in_spam_emails = create_document_frequency_dictionary(spam_email_paths, "spam")
     document_frequencies_of_words_in_legit_emails = create_document_frequency_dictionary(legitimate_email_paths, "legitimate")
 
-
     # If top K distinctive words is requested, reduces the vocabulary size of the model.
     if preprocess_type == "K":
         # Choose K distinctive words.
@@ -189,15 +188,18 @@ def preprocess(preprocess_type):
         spam_distinctive_words = get_distinctive_words(K, "spam", document_frequencies_of_words_in_spam_emails, document_frequencies_of_words_in_legit_emails)
         legit_distinctive_words = get_distinctive_words(K, "legitimate", document_frequencies_of_words_in_spam_emails, document_frequencies_of_words_in_legit_emails)
 
-        '''
+        print("{} distinctive words in spam emails: ".format(K))
         print(spam_distinctive_words)
         print()
+        print("{} distinctive words in legitimate emails: ".format(K))
         print(legit_distinctive_words)
-        '''
 
         # Update bag of words models.
         spam_bag_of_words = get_subset(spam_bag_of_words, spam_distinctive_words)
         legit_bag_of_words = get_subset(legit_bag_of_words, legit_distinctive_words)
+    
+    print("Vocabulary size of spam emails is {}".format(len(list(spam_bag_of_words.keys()))))
+    print("Vocabulary size of legitimate emails is {}".format(len(list(legit_bag_of_words.keys()))))
 
     # Saves the bag of words models as JSON files.
     json_saver("spam_emails_bag_of_words_model.json", spam_bag_of_words)
